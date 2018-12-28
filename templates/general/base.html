@@ -40,9 +40,7 @@
                         LC
                     </div>
                 </li>
-                <li class="active">
-                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard User</span></a>
-                </li>
+                {% include 'general/menu.html' %}
             </ul>
 
         </div>
@@ -69,11 +67,9 @@
 
             </nav>
         </div>
-        <div class="wrapper wrapper-content animated fadeInRight">
-             {% block Content %}
+        {% block Content %}
 
-             {% endblock %}
-        </div>
+        {% endblock %}
         <div class="footer">
             <div class="pull-right">
                 Making the <strong>Design</strong> easy.
@@ -98,6 +94,6 @@
 {% block ExtraJS %}
 
 {% endblock %}
-{% include 'general/message.html' %}
+{% include 'general/plugins/message.html' %}
 </body>
 </html>

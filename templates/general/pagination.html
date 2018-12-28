@@ -1,0 +1,26 @@
+
+<div class="ibox-footer">
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <li>
+                <a class="page-link" href="?page={{ page_obj.previus_page_number }}">Anterior</a>
+            </li>
+        {% endif %}
+        {% for page in page_obj.paginator.page_range %}
+            {% if page_obj.number == page %}
+                <li class="active">
+                    <a class="page-link">{{ page }}</a>
+                </li>
+            {% else %}
+                <li>
+                    <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li>
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Proxima</a>
+            </li>
+        {% endif %}
+    </div>
+</div>

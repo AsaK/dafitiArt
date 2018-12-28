@@ -21,7 +21,7 @@
                 };
                 {% for message in messages %}
                     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                        toastr.info('{{ message }}');
+                        toastr.error('{{ message }}');
                     {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
                         toastr.info('{{ message }}');
                     {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}

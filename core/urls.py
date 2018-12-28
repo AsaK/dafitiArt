@@ -1,13 +1,15 @@
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
 
-from core.views import LoginView, LogoutView
+from core.views import LoginView, LogoutView, DashboardView
+from framework import settings
 
 urlpatterns = [
-    url(r'^$', login_required(TemplateView.as_view(template_name='general/base.html')), name='dashboard'),
+    url(r'^$', login_required(DashboardView.as_view()), name='dashboard'),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/', LogoutView.as_view(), name='logout'),
     url(r'^admin/', admin.site.urls),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

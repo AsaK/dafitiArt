@@ -47,9 +47,9 @@
                     <form method="post" class="m-t" role="form" novalidate>
                         {% csrf_token %}
                         {% if form.non_field_errors %}
-                            <div class="form-group">
+                            <div class="alert alert-danger" role="alert">
                                 {% for error in form.non_field_errors %}
-                                    <p>{{ error|escape }}</p>
+                                    {{ error|escape }}
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -90,7 +90,7 @@
         </div>
     </div>
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
-    {% include 'general/message.html' %}
+    {% include 'general/plugins/message.html' %}
 
 </body>
 
