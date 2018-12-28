@@ -1,12 +1,12 @@
 from django import forms
-
+import json
 from art.choices import STATUS_CHOICES
 from art.models import ArtRequest, ArtRequestEvent
 
 
 class ArtRequestForm(forms.ModelForm):
     status = forms.ChoiceField(STATUS_CHOICES, initial=1)
-    progress = forms.FloatField(max_value=100, min_value=0, required=False)
+    progress = forms.IntegerField(max_value=100, min_value=0, required=False)
 
     class Meta:
         model = ArtRequest
@@ -14,23 +14,37 @@ class ArtRequestForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ArtRequestForm, self).__init__(*args, **kwargs)
+        self.fields.pop('owner')
         self.fields['name'].widget.attrs = {'class': 'form-control', 'placeholder': 'Name'}
         self.fields['description'].widget.attrs = {'class': 'form-control', 'placeholder': 'Description'}
-        self.fields['owner'].widget.attrs = {'class': 'form-control', 'placeholder': 'Owner'}
-        self.fields['owner'].help_text = 'Design that will be associated with the requisition   '
         self.fields['status'].widget.attrs = {'class': 'form-control', 'placeholder': 'Status'}
         self.fields['progress'].widget.attrs = {'class': 'form-control', 'placeholder': 'Progress'}
 
-    def insert_events(self):
-        if 'status' in self.cleaned_data:
+    def events_handler(self, request):
+        if self.cleaned_data['status'] and not self.__equals_status():
             event_data = {
                 'event_name': 'ChangeRequestStatus',
-                'status': self.cleaned_data['status']
+                'status': self.cleaned_data['status'],
+                'status_label': self.__get_status_label(),
+                'user': {
+                    'id': request.user.id,
+                    'name': request.user.name
+                }
             }
             ArtRequestEvent.insert_art_event(self.instance.id, event_data)
-        if 'progress' in self.cleaned_data:
+        if self.cleaned_data['progress'] and self.instance.progress != self.cleaned_data['progress']:
             event_data = {
                 'event_name': 'ChangeRequestProgress',
-                'status': self.cleaned_data['progress']
+                'progress': self.cleaned_data['progress'],
+                'user': {
+                    'id': request.user.id,
+                    'name': request.user.name
+                }
             }
             ArtRequestEvent.insert_art_event(self.instance.id, event_data)
+
+    def __equals_status(self):
+        return self.instance.status == dict(STATUS_CHOICES)[int(self.cleaned_data['status'])]
+
+    def __get_status_label(self):
+        return dict(STATUS_CHOICES)[int(self.cleaned_data['status'])]

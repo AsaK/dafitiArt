@@ -1,0 +1,135 @@
+{% extends 'general/base.html' %}
+{% load staticfiles %}
+{% block Content %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>Project detail</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{% url 'dashboard' %}">Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'art_request.list' %}">Art request</a>
+                </li>
+                <li class="active">
+                    <strong>Detail</strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-lg-9">
+                <div class="wrapper wrapper-content animated fadeInUp">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="m-b-md">
+                                        <a href="#" class="btn btn-white btn-xs pull-right">Edit project</a>
+                                        <h2>{{ object.name }}</h2>
+                                    </div>
+                                    <dl class="dl-horizontal">
+                                        <dt>Status:</dt> <dd><span class="label label-primary">{{ object.status }}</span></dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <dl class="dl-horizontal">
+
+                                        <dt>Created by:</dt> <dd>{{ object.owner.name }}</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-lg-7" id="cluster_info">
+                                    <dl class="dl-horizontal">
+
+                                        <dt>Last Updated:</dt> <dd>{{ object.last_update }}</dd>
+                                        <dt>Created:</dt> <dd> 	{{ object.created_at }} </dd>
+                                        <dt>Responsible:</dt> <dd>{{ object.responsible }}</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <dl class="dl-horizontal">
+                                        <dt>Completed:</dt>
+                                        <dd>
+                                            <div class="progress progress-striped active m-b-sm">
+                                                <div style="width: {{ object.progress }}%;" class="progress-bar"></div>
+                                            </div>
+                                            <small>Project completed in <strong>{{ object.progress }}%</strong>. Remaining close the project, sign a contract and invoice.</small>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="row m-t-sm">
+                                <div class="col-lg-12">
+                                <div class="panel blank-panel">
+                                <div class="panel-heading">
+                                    <div class="panel-options">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#tab-1" data-toggle="tab" aria-expanded="true">Users messages</a></li>
+                                            <li class=""><a href="#tab-2" data-toggle="tab" aria-expanded="false">Last activity</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="panel-body">
+
+                                <div class="tab-content">
+                                <div class="tab-pane active" id="tab-1">
+                                    <div class="feed-activity-list">
+                                        <div class="feed-element">
+                                            <a href="#" class="pull-left">
+                                                <img alt="image" class="img-circle" src="{% static 'img/avatar.png' %}">
+                                            </a>
+                                            <div class="media-body ">
+                                                <small class="pull-right">2h ago</small>
+                                                <strong>Mark Johnson</strong> posted message on <strong>Monica Smith</strong> site. <br>
+                                                <small class="text-muted">Today 2:10 pm - 12.06.2014</small>
+                                                <div class="well">
+                                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                                    Over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane" id="tab-2">
+                                    {% include 'art/activity.html' %}
+                                </div>
+                                </div>
+
+                                </div>
+
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="wrapper wrapper-content project-manager">
+                    <h4>Project description</h4>
+                    <p class="small">
+                        {{ object.description }}
+                    </p>
+                    <h5>Project files</h5>
+                    <ul class="list-unstyled project-files">
+                        <li><a href=""><i class="fa fa-file"></i> Project_document.docx</a></li>
+                        <li><a href=""><i class="fa fa-file-picture-o"></i> Logo_zender_company.jpg</a></li>
+                        <li><a href=""><i class="fa fa-stack-exchange"></i> Email_from_Alex.mln</a></li>
+                        <li><a href=""><i class="fa fa-file"></i> Contract_20_11_2014.docx</a></li>
+                    </ul>
+                    <div class="text-center m-t-md">
+                        <a href="#" class="btn btn-xs btn-primary">Add files</a>
+                    </div>
+                    <div class="row">
+    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

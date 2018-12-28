@@ -1,43 +1,65 @@
 {% extends 'general/base.html' %}
 {% block Content %}
-    <div class="ibox float-e-margins">
-        <div class="ibox-title">
-            <h5>Insert data for the new request</h5>
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>Art Request</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{% url 'dashboard' %}">Home</a>
+                </li>
+                <li class="active">
+                    <a href="{% url 'art_request.list' %}">Art request</a>
+                </li>
+                <li class="active">
+                    <strong>Create</strong>
+                </li>
+            </ol>
         </div>
-        <div class="ibox-content">
-            <form method="post" class="form-horizontal">
-                {% csrf_token %}
-                {% if form.non_field_errors %}
-                     <div class="alert alert-danger" role="alert">
-                         {% for error in form.non_field_errors %}
-                             {{ error }}
-                         {% endfor %}
-                     </div>
-                {% endif %}
-                {% for hidden_field in form.hidden_fields %}
-                    {{ hidden_field.errors }}
-                    {{ hidden_field }}
-                {% endfor %}
-                {% for field in form.visible_fields %}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">{{ field.label }}</label>
-                        <div class="col-sm-10">
-                            {{ field }}
-                            {% if field.help_text %}
-                                <span class="help-block m-b-none">{{ field.help_text }}</span>
-                            {% endif %}
-                        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="wrapper wrapper-content animated fadeInUp">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Insert data for the new request</h5>
                     </div>
-                    <div class="hr-line-dashed"></div>
-                {% endfor %}
+                    <div class="ibox-content">
+                        <form method="post" class="form-horizontal">
+                            {% csrf_token %}
+                            {% if form.non_field_errors %}
+                                 <div class="alert alert-danger" role="alert">
+                                     {% for error in form.non_field_errors %}
+                                         {{ error }}
+                                     {% endfor %}
+                                 </div>
+                            {% endif %}
+                            {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                            {% endfor %}
+                            {% for field in form.visible_fields %}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{{ field.label }}</label>
+                                    <div class="col-sm-10">
+                                        {{ field }}
+                                        {% if field.help_text %}
+                                            <span class="help-block m-b-none">{{ field.help_text }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                            {% endfor %}
 
-                <div class="form-group">
-                    <div class="col-sm-4 col-sm-offset-2">
-                        <a href="{% url 'art_request.list' %}"><button class="btn btn-white" type="button">Cancel</button></a>
-                        <button class="btn btn-primary" type="submit">Create</button>
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <a href="{% url 'art_request.list' %}"><button class="btn btn-white" type="button">Cancel</button></a>
+                                    <button class="btn btn-primary" type="submit">Create</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 {% endblock %}

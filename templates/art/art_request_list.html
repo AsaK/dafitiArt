@@ -9,7 +9,7 @@
                     <a href="{% url 'dashboard' %}">Home</a>
                 </li>
                 <li class="active">
-                    <strong>Art Request<requests></requests></strong>
+                    <strong>Art request</strong>
                 </li>
             </ol>
         </div>
@@ -43,18 +43,18 @@
                                             <tr>
                                                 <td class="project-status">
 {#                                                    TODO Active Status Calculated field Event#}
-                                                    <span class="label label-primary">Active</span>
+                                                    <span class="label label-primary">{{ object.status }}</span>
                                                 </td>
                                                 <td class="project-title">
-                                                    <a href="#">{{ object.name }}</a>
+                                                    <a href="{% url 'art_request.detail' object.id %}">{{ object.name }}</a>
                                                     <br>
                                                     <small>Created {{ object.created_at }}</small>
                                                 </td>
                                                 <td class="project-completion">
 {#                                                        TODO Calcultated field to percent event status #}
-                                                        <small>Completion with: 0%</small>
+                                                        <small>Completion with: {{ object.progress }}%</small>
                                                         <div class="progress progress-mini">
-                                                            <div style="width: 0%;" class="progress-bar"></div>
+                                                            <div style="width: {{ object.progress }}%;" class="progress-bar"></div>
                                                         </div>
                                                 </td>
                                                 <td class="project-people">
@@ -63,8 +63,7 @@
                                                     {% endif %}
                                                 </td>
                                                 <td class="project-actions">
-                                                    <a href="#" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>
-                                                    <a href="#" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>
+                                                    <a href="{% url 'art_request.detail' object.id %}" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>
                                                 </td>
                                             </tr>
                                         {% endfor %}
