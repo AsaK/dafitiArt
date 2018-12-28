@@ -1,5 +1,16 @@
 {% extends 'general/base.html' %}
 {% load staticfiles %}
+{% block ExtraHead %}
+    <style>
+    .modal-open .select2-dropdown {
+        z-index: 10060;
+    }
+
+    .modal-open .select2-close-mask {
+        z-index: 10055;
+    }
+    </style>
+{% endblock %}
 {% block Content %}
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
@@ -21,6 +32,24 @@
             <div class="col-lg-9">
                 <div class="wrapper wrapper-content animated fadeInUp">
                     <div class="ibox">
+                        <div class="ibox-title">
+                            <div class="btn-group">
+                                <a href="{% url 'art_request.update' object.id %}" class="btn btn-default" type="button"><i class="fa fa-edit"></i> Edit </a>
+                                <a class="btn btn-default" type="button"><i class="fa fa-comment-o"></i> Comment </a>
+                                {% include 'art/assign.html' %}
+                            </div>
+                            <div class="btn-group open">
+                                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" aria-expanded="true">Workflow <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Completed</a></li>
+                                    <li><a href="#">In Progress</a></li>
+                                    <li><a href="#">In Review</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">Returned</a></li>
+                                    <li><a href="#">Inactive</a></li>
+                                </ul>
+                            </div>
+                        </div>
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -132,4 +161,7 @@
             </div>
         </div>
 
+{% endblock %}
+{% block ExtraJS %}
+    {% include 'art/assignJS.html' %}
 {% endblock %}

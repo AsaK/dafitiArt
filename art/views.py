@@ -1,10 +1,15 @@
 # Create your views here.
 from django.contrib import messages
+from django.core import serializers
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 
 from art.forms import ArtRequestForm
-from art.models import ArtRequest
+from art.models import ArtRequest, ArtRequestEvent
+from core.models import User
+import json
 
 
 class ArtRequestList(ListView):
@@ -64,3 +69,37 @@ class ArtRequestDetail(TemplateView):
         context['object'] = ArtRequest.objects.get(id=object_id)
         context['page_title'] = 'DafitiArt | Update Art Detail'
         return context
+
+
+def load_designers(request):
+    users = User.objects.all().values('id', 'name', 'email').order_by('id')
+    return JsonResponse({"users": list(users)})
+
+@csrf_exempt
+def set_responsible(request):
+    if request.method == 'POST':
+        art_request_id = request.POST.get('art_request_id')
+        responsible_id = request.POST.get('responsible_id')
+        if art_request_id and responsible_id:
+            responsible = User.objects.get(id=responsible_id)
+            event_data = {
+                'event_name': 'ChangeRequestResponsible',
+                'responsible': {
+                    'id': responsible.id,
+                    'name': responsible.name
+                },
+                'user': {
+                    'id': request.user.id,
+                    'name': request.user.name
+                }
+            }
+            ArtRequestEvent.insert_art_event(art_request_id, event_data)
+            messages.add_message(request, messages.SUCCESS, 'New responsible assigned to request')
+            return JsonResponse({
+                'status': 'sucess'
+            })
+        else:
+            return JsonResponse({
+                'status': 'failed'
+            })
+

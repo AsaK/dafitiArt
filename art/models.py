@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import ast
 import json
 from django.core import serializers
 
@@ -32,7 +33,7 @@ class ArtRequest(models.Model):
     @property
     def responsible(self):
         art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeRequestResponsible')
-        return int(json.loads(art_status_event.data)['responsible']) if art_status_event else 'Not assigned'
+        return ast.literal_eval(art_status_event.data)['responsible'] if art_status_event else 'Not assigned'
 
     @property
     def last_update(self):
