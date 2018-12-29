@@ -9,7 +9,6 @@ from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from art.forms import ArtRequestForm
 from art.models import ArtRequest, ArtRequestEvent
 from core.models import User
-import json
 
 
 class ArtRequestList(ListView):
@@ -75,6 +74,7 @@ def load_designers(request):
     users = User.objects.all().values('id', 'name', 'email').order_by('id')
     return JsonResponse({"users": list(users)})
 
+
 @csrf_exempt
 def set_responsible(request):
     if request.method == 'POST':
@@ -83,7 +83,7 @@ def set_responsible(request):
         if art_request_id and responsible_id:
             responsible = User.objects.get(id=responsible_id)
             event_data = {
-                'event_name': 'ChangeRequestResponsible',
+                'event_name': 'ChangeResponsible',
                 'responsible': {
                     'id': responsible.id,
                     'name': responsible.name
@@ -95,11 +95,23 @@ def set_responsible(request):
             }
             ArtRequestEvent.insert_art_event(art_request_id, event_data)
             messages.add_message(request, messages.SUCCESS, 'New responsible assigned to request')
-            return JsonResponse({
-                'status': 'sucess'
-            })
-        else:
-            return JsonResponse({
-                'status': 'failed'
-            })
+            return JsonResponse({'status': 'sucess'})
 
+
+@csrf_exempt
+def insert_message(request):
+    if request.method == 'POST':
+        art_request_id = request.POST.get('art_request_id')
+        message = request.POST.get('message')
+        if art_request_id and message:
+            event_data = {
+                'event_name': 'InsertComment',
+                'message': message,
+                'user': {
+                    'id': request.user.id,
+                    'name': request.user.name
+                }
+            }
+            ArtRequestEvent.insert_art_event(art_request_id, event_data)
+            messages.add_message(request, messages.SUCCESS, 'New comment entered')
+            return JsonResponse({'status': 'sucess'})

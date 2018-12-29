@@ -1,0 +1,8 @@
+{% load staticfiles %}
+<div class="ibox-footer jsCommentBox"  style="display: none">
+    <div id="commentEditor"></div>
+</div>
+<div class="ibox-footer text-right tooltip-demo jsCommentBox" style="display: none">
+    <btn class="btn btn-sm btn-primary" id="btnSendMessage" data-toggle="tooltip" data-placement="top" title="" data-original-title="Send"><i class="fa fa-reply"></i> Send</btn>
+    <a href="{% url 'art_request.detail' object.id  %}" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Discard comment"><i class="fa fa-times"></i> Discard</a>
+</div>

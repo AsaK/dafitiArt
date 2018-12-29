@@ -35,8 +35,8 @@
                         <div class="ibox-title">
                             <div class="btn-group">
                                 <a href="{% url 'art_request.update' object.id %}" class="btn btn-default" type="button"><i class="fa fa-edit"></i> Edit </a>
-                                <a class="btn btn-default" type="button"><i class="fa fa-comment-o"></i> Comment </a>
-                                {% include 'art/assign.html' %}
+                                <a class="btn btn-default" type="button" id="btnComment"><i class="fa fa-comment-o"></i> Comment </a>
+                                {% include 'art/modal/assign.html' %}
                             </div>
                             <div class="btn-group open">
                                 <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" aria-expanded="true">Workflow <span class="caret"></span></button>
@@ -108,20 +108,21 @@
                                 <div class="tab-content">
                                 <div class="tab-pane active" id="tab-1">
                                     <div class="feed-activity-list">
-                                        <div class="feed-element">
-                                            <a href="#" class="pull-left">
-                                                <img alt="image" class="img-circle" src="{% static 'img/avatar.png' %}">
-                                            </a>
-                                            <div class="media-body ">
-                                                <small class="pull-right">2h ago</small>
-                                                <strong>Mark Johnson</strong> posted message on <strong>Monica Smith</strong> site. <br>
-                                                <small class="text-muted">Today 2:10 pm - 12.06.2014</small>
-                                                <div class="well">
-                                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
-                                                    Over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                        {% for message in object.messages %}
+                                            <div class="feed-element">
+                                                <a href="#" class="pull-left">
+                                                    <img alt="image" class="img-circle" src="{% static 'img/avatar.png' %}">
+                                                </a>
+                                                <div class="media-body ">
+                                                    <small class="pull-right">{{ message.created_at }}</small>
+                                                    <strong>{{ message.data_as_dict.user.name }}</strong><br>
+                                                    <small class="text-muted">Design</small>
+                                                    <div class="well">
+                                                        {{ message.data_as_dict.message|safe }}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        {% endfor %}
                                     </div>
 
                                 </div>
@@ -136,8 +137,10 @@
                                 </div>
                             </div>
                         </div>
+                        {% include 'art/modal/comment.html' %}
                     </div>
                 </div>
+
             </div>
             <div class="col-lg-3">
                 <div class="wrapper wrapper-content project-manager">
@@ -155,13 +158,12 @@
                     <div class="text-center m-t-md">
                         <a href="#" class="btn btn-xs btn-primary">Add files</a>
                     </div>
-                    <div class="row">
-    </div>
                 </div>
             </div>
         </div>
 
 {% endblock %}
 {% block ExtraJS %}
-    {% include 'art/assignJS.html' %}
+    {% include 'art/modal/assignJS.html' %}
+    {% include 'art/modal/commentJS.html' %}
 {% endblock %}

@@ -22,18 +22,18 @@ class ArtRequest(models.Model):
 
     @property
     def status(self):
-        art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeRequestStatus')
-        return dict(STATUS_CHOICES)[int(json.loads(art_status_event.data)['status'])] if art_status_event else None
+        art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeStatus')
+        return dict(STATUS_CHOICES)[int(art_status_event.data_as_dict['status'])] if art_status_event else None
 
     @property
     def progress(self):
-        art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeRequestProgress')
-        return int(json.loads(art_status_event.data)['progress']) if art_status_event else 0
+        art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeProgress')
+        return (art_status_event.data_as_dict['progress']) if art_status_event else 0
 
     @property
     def responsible(self):
-        art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeRequestResponsible')
-        return ast.literal_eval(art_status_event.data)['responsible'] if art_status_event else 'Not assigned'
+        art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeResponsible')
+        return art_status_event.data_as_dict['responsible']['name'] if art_status_event else 'Not assigned'
 
     @property
     def last_update(self):
@@ -43,6 +43,10 @@ class ArtRequest(models.Model):
     @property
     def events(self):
         return ArtRequestEvent.objects.filter(art_request_id=self.id).order_by('-sequence')
+
+    @property
+    def messages(self):
+        return ArtRequestEvent.objects.filter(Q(art_request_id=self.id) & Q(event='InsertComment')).order_by('sequence')
 
 
 class ArtRequestEvent(models.Model):
@@ -77,3 +81,7 @@ class ArtRequestEvent(models.Model):
         return ArtRequestEvent.objects.filter(
             Q(art_request_id=art_request_id) &
             Q(event=event)).order_by('-sequence').first()
+
+    @property
+    def data_as_dict(self):
+        return ast.literal_eval(self.data)

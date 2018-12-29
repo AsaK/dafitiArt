@@ -23,7 +23,7 @@ class ArtRequestForm(forms.ModelForm):
     def events_handler(self, request):
         if self.cleaned_data['status'] and not self.__equals_status():
             event_data = {
-                'event_name': 'ChangeRequestStatus',
+                'event_name': 'ChangeStatus',
                 'status': self.cleaned_data['status'],
                 'status_label': self.__get_status_label(),
                 'user': {
@@ -34,7 +34,7 @@ class ArtRequestForm(forms.ModelForm):
             ArtRequestEvent.insert_art_event(self.instance.id, event_data)
         if self.cleaned_data['progress'] and self.instance.progress != self.cleaned_data['progress']:
             event_data = {
-                'event_name': 'ChangeRequestProgress',
+                'event_name': 'ChangeProgress',
                 'progress': self.cleaned_data['progress'],
                 'user': {
                     'id': request.user.id,
