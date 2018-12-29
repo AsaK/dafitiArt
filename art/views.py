@@ -1,7 +1,6 @@
 # Create your views here.
 from django.contrib import messages
-from django.core import serializers
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
@@ -9,6 +8,7 @@ from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 from art.forms import ArtRequestForm
 from art.models import ArtRequest, ArtRequestEvent
 from core.models import User
+from art.choices import STATUS_CHOICES
 
 
 class ArtRequestList(ListView):
@@ -114,4 +114,34 @@ def insert_message(request):
             }
             ArtRequestEvent.insert_art_event(art_request_id, event_data)
             messages.add_message(request, messages.SUCCESS, 'New comment entered')
+            return JsonResponse({'status': 'sucess'})
+
+
+@csrf_exempt
+def change_status(request):
+    if request.method == 'POST':
+        art_request_id = request.POST.get('art_request_id')
+        status = request.POST.get('status')
+        if art_request_id and status:
+            status_id = [item for item in STATUS_CHOICES if item[1] == status][0][0]
+            event_data = {
+                'event_name': 'ChangeStatus',
+                'status': status_id,
+                'user': {
+                    'id': request.user.id,
+                    'name': request.user.name
+                }
+            }
+            ArtRequestEvent.insert_art_event(art_request_id, event_data)
+            if status == 'Completed':
+                event_data = {
+                    'event_name': 'ChangeProgress',
+                    'progress': 100,
+                    'user': {
+                        'id': request.user.id,
+                        'name': request.user.name
+                    }
+                }
+                ArtRequestEvent.insert_art_event(art_request_id, event_data)
+            messages.add_message(request, messages.SUCCESS, 'Status successfully changed')
             return JsonResponse({'status': 'sucess'})

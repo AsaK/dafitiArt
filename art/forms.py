@@ -14,6 +14,9 @@ class ArtRequestForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ArtRequestForm, self).__init__(*args, **kwargs)
+        if self.instance:
+            self.fields['status'].initial = self.instance.status
+            self.fields['progress'].initial = self.instance.progress
         self.fields.pop('owner')
         self.fields['name'].widget.attrs = {'class': 'form-control', 'placeholder': 'Name'}
         self.fields['description'].widget.attrs = {'class': 'form-control', 'placeholder': 'Description'}
@@ -25,7 +28,6 @@ class ArtRequestForm(forms.ModelForm):
             event_data = {
                 'event_name': 'ChangeStatus',
                 'status': self.cleaned_data['status'],
-                'status_label': self.__get_status_label(),
                 'user': {
                     'id': request.user.id,
                     'name': request.user.name
@@ -45,6 +47,3 @@ class ArtRequestForm(forms.ModelForm):
 
     def __equals_status(self):
         return self.instance.status == dict(STATUS_CHOICES)[int(self.cleaned_data['status'])]
-
-    def __get_status_label(self):
-        return dict(STATUS_CHOICES)[int(self.cleaned_data['status'])]

@@ -36,17 +36,17 @@
                             <div class="btn-group">
                                 <a href="{% url 'art_request.update' object.id %}" class="btn btn-default" type="button"><i class="fa fa-edit"></i> Edit </a>
                                 <a class="btn btn-default" type="button" id="btnComment"><i class="fa fa-comment-o"></i> Comment </a>
-                                {% include 'art/modal/assign.html' %}
+                                {% include 'art/actions/assign.html' %}
                             </div>
                             <div class="btn-group open">
                                 <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" aria-expanded="true">Workflow <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Completed</a></li>
-                                    <li><a href="#">In Progress</a></li>
-                                    <li><a href="#">In Review</a></li>
+                                    <li><a href="#" id="btnCompleted" class="jsBtnStatus">Completed</a></li>
+                                    <li><a href="#" id="btnInProgress" class="jsBtnStatus">In Progress</a></li>
+                                    <li><a href="#" id="btnInReview" class="jsBtnStatus">In Review</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#">Returned</a></li>
-                                    <li><a href="#">Inactive</a></li>
+                                    <li><a href="#" id="btnReturned" class="jsBtnStatus">Returned</a></li>
+                                    <li><a href="#" id="btnInactive" class="jsBtnStatus">Inactive</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -137,7 +137,7 @@
                                 </div>
                             </div>
                         </div>
-                        {% include 'art/modal/comment.html' %}
+                        {% include 'art/actions/comment.html' %}
                     </div>
                 </div>
 
@@ -164,6 +164,7 @@
 
 {% endblock %}
 {% block ExtraJS %}
-    {% include 'art/modal/assignJS.html' %}
-    {% include 'art/modal/commentJS.html' %}
+    {% include 'art/actions/assignJS.html' %}
+    {% include 'art/actions/commentJS.html' %}
+    {% include 'art/actions/statusJS.html' %}
 {% endblock %}

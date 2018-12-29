@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<script src="{% static 'js/plugins/sweetalert/sweetalert.min.js' %}" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("head link[rel='stylesheet']").last().after("<link rel='stylesheet' href='{% static 'css/plugins/sweetalert/sweetalert.css' %}' type='text/css'>");
+    });
+
+    $(".jsBtnStatus").click(function() {
+        var status = $(this).text();
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to change the status to "+ status +"?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00b193",
+            confirmButtonText: "Yes, change it!",
+            closeOnConfirm: false
+        }, function () {
+           $.ajax({
+               type: "POST",
+               url: "{% url 'ajax.change-status' %}",
+               data: {
+                   art_request_id: {{ object.id }},
+                   status: status,
+               },
+               success: function () {
+                   swal({title: "Changed!",text: "The status has been changed.",type: "success"}, function(){
+                       setTimeout(function() {
+                           location.reload();
+                           }, 0001);
+                   });
+               }
+           });
+        });
+    })
+</script>
