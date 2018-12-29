@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import unicode_literals
 
 import ast
@@ -58,17 +59,30 @@ class ArtRequestEvent(models.Model):
 
     @staticmethod
     def insert_art_event(art_request_id, data):
+        """
+            Função para inserir um evento no storage de eventos do EventSorucing
+
+        :param art_request_id:
+        :param data:
+        :return:
+        """
         next_sequence = ArtRequestEvent.__get_last_sequence(art_request_id) + 1
         art_event = ArtRequestEvent(
             art_request_id=art_request_id,
             sequence=next_sequence,
             event=data['event_name'],
-            data=json.dumps(data)
+            data=json.dumps(data, ensure_ascii=False).encode('utf-8')
         )
         art_event.save()
 
     @staticmethod
     def __get_last_sequence(art_request_id):
+        """
+            Para o correto versionamento de estado do objeto, necessita criar um sequence, como no SQLite, não há um
+            sequence de banco, foi implementado essa forma básica.
+        :param art_request_id:
+        :return:
+        """
         last_sequence = ArtRequestEvent.objects.filter(art_request_id=art_request_id).values_list('sequence').order_by('-sequence')[:1]
         return last_sequence[0][0] if last_sequence else 0
 
@@ -78,10 +92,21 @@ class ArtRequestEvent(models.Model):
 
     @staticmethod
     def get_last_event(art_request_id, event):
+        """
+            Função para retornar a versão mais recente do registro, solicitado.
+
+        :param art_request_id:
+        :param event:
+        :return ResultSet com o registro mais recente do evento:
+        """
         return ArtRequestEvent.objects.filter(
             Q(art_request_id=art_request_id) &
             Q(event=event)).order_by('-sequence').first()
 
     @property
     def data_as_dict(self):
+        """
+            Um 'Hack' para auxiliar o tratamento do field 'data' do evento, que armazena todas as informações do evento
+        :return o campo data como um dicionário:
+        """
         return ast.literal_eval(self.data)

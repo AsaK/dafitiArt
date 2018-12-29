@@ -1,3 +1,4 @@
+# coding=utf-8
 # Create your views here.
 from django.contrib import messages
 from django.http import JsonResponse
@@ -71,12 +72,22 @@ class ArtRequestDetail(TemplateView):
 
 
 def load_designers(request):
+    """
+        Função que retorna todos os designers da aplicação.
+    :param request:
+    :return Json com todos os designers:
+    """
     users = User.objects.all().values('id', 'name', 'email').order_by('id')
     return JsonResponse({"users": list(users)})
 
 
 @csrf_exempt
 def set_responsible(request):
+    """
+        Método para alterar o responsável da requisição de arte.
+    :param request:
+    :return Json com status da requsição:
+    """
     if request.method == 'POST':
         art_request_id = request.POST.get('art_request_id')
         responsible_id = request.POST.get('responsible_id')
@@ -100,6 +111,12 @@ def set_responsible(request):
 
 @csrf_exempt
 def insert_message(request):
+    """
+        Método para inserir um comentário na requisição de arte.
+    :param request:
+    :return Json com status da requsição:
+    """
+
     if request.method == 'POST':
         art_request_id = request.POST.get('art_request_id')
         message = request.POST.get('message')
@@ -119,6 +136,11 @@ def insert_message(request):
 
 @csrf_exempt
 def change_status(request):
+    """
+        Método para alterar o status da requisição
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
         art_request_id = request.POST.get('art_request_id')
         status = request.POST.get('status')

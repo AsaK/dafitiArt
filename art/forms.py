@@ -1,5 +1,5 @@
+# coding=utf-8
 from django import forms
-import json
 from art.choices import STATUS_CHOICES
 from art.models import ArtRequest, ArtRequestEvent
 
@@ -14,8 +14,8 @@ class ArtRequestForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ArtRequestForm, self).__init__(*args, **kwargs)
-        if self.instance:
-            self.fields['status'].initial = self.instance.status
+        if self.instance.pk:
+            self.fields['status'].initial = [item for item in STATUS_CHOICES if item[1] == self.instance.status][0][0]
             self.fields['progress'].initial = self.instance.progress
         self.fields.pop('owner')
         self.fields['name'].widget.attrs = {'class': 'form-control', 'placeholder': 'Name'}
@@ -24,6 +24,13 @@ class ArtRequestForm(forms.ModelForm):
         self.fields['progress'].widget.attrs = {'class': 'form-control', 'placeholder': 'Progress'}
 
     def events_handler(self, request):
+        """
+            Função para tratar os eventos, pelo fato de estar utilizando event sourcing, necessita um handler para
+            atualizar os estados da versão do objeto.
+
+        :param request:
+        :return None:
+        """
         if self.cleaned_data['status'] and not self.__equals_status():
             event_data = {
                 'event_name': 'ChangeStatus',
