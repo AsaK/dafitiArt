@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
-
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail
 from django.db import models
+from core.utils import get_avatar_path
 
 
 class UserManager(BaseUserManager):
@@ -41,7 +41,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=100, verbose_name='Name')
     email = models.EmailField(unique=True, verbose_name='Email')
-    avatar = models.ImageField(verbose_name='Avatar', null=True, blank=True, upload_to='avatars/')
+    avatar = models.ImageField(verbose_name='Avatar', null=True, blank=True, upload_to=get_avatar_path)
     created_at = models.DateTimeField(verbose_name='Creation date', auto_now_add=True)
 
     objects = UserManager()

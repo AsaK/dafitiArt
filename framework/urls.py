@@ -17,4 +17,5 @@ from django.conf.urls import include, url
 
 urlpatterns = [
     url(r'^', include('core.urls')),
+    url(r'^art/', include('art.urls')),
 ]

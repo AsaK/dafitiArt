@@ -2,7 +2,7 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView, RedirectView
+from django.views.generic import FormView, RedirectView, TemplateView
 
 from core.forms import LoginForm
 
@@ -35,3 +35,7 @@ class LogoutView(RedirectView):
         logout(request)
         messages.add_message(self.request, messages.SUCCESS, 'User successfully logged out')
         return super(LogoutView, self).get(request, *args, **kwargs)
+
+
+class DashboardView(TemplateView):
+    template_name = 'general/index.html'

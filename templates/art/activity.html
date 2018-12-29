@@ -1,0 +1,20 @@
+{% load art_tags %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Changed by</th>
+        <th>Action</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody id="activity-tbody">
+        {% for activity in object.events %}
+            <tr>
+                <td>{{ activity.data_as_dict.user.name }}</td>
+                <td>{{ activity.data_as_dict.event_name|activity_label }}</td>
+                <td>{{ activity.created_at }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
