@@ -3,7 +3,6 @@
 from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.utils.encoding import force_text
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 
@@ -22,6 +21,14 @@ class ArtRequestList(ListView):
         context = super(ArtRequestList, self).get_context_data()
         context['page_title'] = 'DafitiArt | Art Request List'
         return context
+
+    def get_queryset(self):
+        queryset = super(ArtRequestList, self).get_queryset()
+        search = self.request.GET.get('search')
+        if search:
+            search = str(search)
+            queryset = queryset.filter(id=search) if search.isdigit() else queryset.filter(name__contains=search)
+        return queryset
 
 
 class ArtRequestCreate(CreateView):
