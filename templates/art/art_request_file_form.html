@@ -2,17 +2,24 @@
 {% block Content %}
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
-            <h2>Art Request</h2>
+            <h2>Project files</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="{% url 'dashboard' %}">Home</a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="{% url 'art_request.list' %}">Art request</a>
                 </li>
-                <li class="active">
-                    <strong>Create</strong>
+                <li>
+                    <a href="{% url 'art_request.detail' art_request_id %}">Detail</a>
                 </li>
+                <li class="active">
+                    <a href="{% url 'art_request.files' art_request_id %}">Files</a>
+                </li>
+                <li class="active">
+                    <strong>Upload</strong>
+                </li>
+
             </ol>
         </div>
     </div>
@@ -24,7 +31,7 @@
                         <h5>Insert data for the new request</h5>
                     </div>
                     <div class="ibox-content">
-                        <form method="post" class="form-horizontal">
+                        <form method="post" class="form-horizontal" enctype="multipart/form-data">
                             {% csrf_token %}
                             {% if form.non_field_errors %}
                                  <div class="alert alert-danger" role="alert">
@@ -53,8 +60,8 @@
 
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">
-                                    <a href="{% url 'art_request.list' %}"><button class="btn btn-white" type="button">Cancel</button></a>
-                                    <button class="btn btn-primary" type="submit">Create</button>
+                                    <a href="{% url 'art_request.files' art_request_id %}"><button class="btn btn-white" type="button">Cancel</button></a>
+                                    <button class="btn btn-primary" type="submit">Upload</button>
                                 </div>
                             </div>
                         </form>

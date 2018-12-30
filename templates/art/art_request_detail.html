@@ -14,7 +14,7 @@
 {% block Content %}
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
-            <h2>Project detail</h2>
+            <h2>Request detail</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="{% url 'dashboard' %}">Home</a>
@@ -149,19 +149,18 @@
             </div>
             <div class="col-lg-3">
                 <div class="wrapper wrapper-content project-manager">
-                    <h4>Project description</h4>
+                    <h4>Request description</h4>
                     <p class="small">
                         {{ object.description }}
                     </p>
-                    <h5>Project files</h5>
+                    <h5>Request files</h5>
                     <ul class="list-unstyled project-files">
-                        <li><a href=""><i class="fa fa-file"></i> Project_document.docx</a></li>
-                        <li><a href=""><i class="fa fa-file-picture-o"></i> Logo_zender_company.jpg</a></li>
-                        <li><a href=""><i class="fa fa-stack-exchange"></i> Email_from_Alex.mln</a></li>
-                        <li><a href=""><i class="fa fa-file"></i> Contract_20_11_2014.docx</a></li>
+                        {% for file in object.artrequestfile_set.all %}
+                            <li><i class="fa fa-file"></i> {{ file.name }}</li>
+                        {% endfor %}
                     </ul>
                     <div class="text-center m-t-md">
-                        <a href="#" class="btn btn-xs btn-primary">Add files</a>
+                        <a href="{% url 'art_request.files' object.id %}" class="btn btn-md btn-primary">File Manager</a>
                     </div>
                 </div>
             </div>

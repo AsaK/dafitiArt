@@ -6,6 +6,8 @@ import json
 from django.core import serializers
 
 from django.db import models
+
+from art.utils import get_files_path
 from choices import STATUS_CHOICES
 # Create your models here.
 from django.db.models import Q
@@ -110,3 +112,24 @@ class ArtRequestEvent(models.Model):
         :return o campo data como um dicionário:
         """
         return ast.literal_eval(self.data)
+
+
+class ArtRequestFile(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Name')
+    is_media = models.BooleanField(
+        verbose_name='File is media',
+        default=False,
+        help_text='Checked if the file is a media file'
+
+    )
+    file = models.FileField(upload_to=get_files_path)
+    art_request = models.ForeignKey('art.ArtRequest', verbose_name='Art request', on_delete=models.DO_NOTHING)
+    owner = models.ForeignKey('core.User', verbose_name='Owner', on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Art request file'
+        verbose_name_plural = 'Art request files'
