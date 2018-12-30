@@ -6,8 +6,8 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView
 
-from art.forms import ArtRequestForm
-from art.models import ArtRequest, ArtRequestEvent
+from art.forms import ArtRequestForm, ArtRequestFileForm
+from art.models import ArtRequest, ArtRequestEvent, ArtRequestFile
 from core.models import User
 from art.choices import STATUS_CHOICES
 
@@ -21,6 +21,14 @@ class ArtRequestList(ListView):
         context = super(ArtRequestList, self).get_context_data()
         context['page_title'] = 'DafitiArt | Art Request List'
         return context
+
+    def get_queryset(self):
+        queryset = super(ArtRequestList, self).get_queryset()
+        search = self.request.GET.get('search')
+        if search:
+            search = str(search)
+            queryset = queryset.filter(id=search) if search.isdigit() else queryset.filter(name__contains=search)
+        return queryset
 
 
 class ArtRequestCreate(CreateView):
@@ -67,8 +75,48 @@ class ArtRequestDetail(TemplateView):
         context = super(ArtRequestDetail, self).get_context_data()
         object_id = kwargs.get('pk')
         context['object'] = ArtRequest.objects.get(id=object_id)
-        context['page_title'] = 'DafitiArt | Update Art Detail'
+        context['page_title'] = 'DafitiArt | Detail Art Detail'
         return context
+
+
+class ArtRequestFileList(ListView):
+    template_name = 'art/art_request_file.html'
+    model = ArtRequestFile
+
+    def get_context_data(self, **kwargs):
+        context = super(ArtRequestFileList, self).get_context_data()
+        context['page_title'] = 'DafitiArt | Art Request Files'
+        context['art_request_id'] = self.kwargs.get('pk')
+        return context
+
+    def get_queryset(self):
+        art_request_id = self.kwargs.get('pk')
+        return super(ArtRequestFileList, self).get_queryset().filter(art_request_id=art_request_id)
+
+
+class ArtRequestFileCreate(CreateView):
+    model = ArtRequestFile
+    form_class = ArtRequestFileForm
+    template_name = 'art/art_request_file_form.html'
+
+    def form_valid(self, form):
+        form.instance.owner_id = self.request.user.id
+        form.instance.art_request_id = self.kwargs.get('pk')
+        response = super(ArtRequestFileCreate, self).form_valid(form)
+        messages.add_message(self.request, messages.SUCCESS, 'New file uploaded to request')
+        return response
+
+    def get_context_data(self, **kwargs):
+        context = super(ArtRequestFileCreate, self).get_context_data()
+        context['page_title'] = 'DafitiArt | Create Art Request'
+        context['art_request_id'] = self.kwargs.get('pk')
+        return context
+    
+    def form_invalid(self, form):
+        return super(ArtRequestFileCreate, self).form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('art_request.files', kwargs={'pk': self.kwargs.get('pk')})
 
 
 def load_designers(request):

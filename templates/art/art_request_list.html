@@ -25,25 +25,29 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        {% if object_list %}
-                            <div class="row m-b-sm m-t-sm">
-                                <div class="col-md-1">
-                                    <button type="button" id="loading-example-btn" class="btn btn-white btn-sm"><i class="fa fa-refresh"></i> Refresh</button>
-                                </div>
-                                <div class="col-md-11">
-                                    <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control"> <span class="input-group-btn">
-                                        <button type="button" class="btn btn-sm btn-primary"> Go!</button> </span></div>
-                                </div>
+                        <div class="row m-b-sm m-t-sm">
+                            <div class="col-md-12">
+                                <form method="get" action="{% url 'art_request.list' %}">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="Search" name="search" class="input-sm form-control">
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-sm btn-primary"> Go!</button>
+                                        </span>
+                                    </div>
+                                </form>
                             </div>
-
+                        </div>
+                        {% if object_list %}
                             <div class="project-list">
                                 <table class="table table-hover">
                                     <tbody>
                                         {% for object in object_list %}
                                             <tr>
                                                 <td class="project-status">
-{#                                                    TODO Active Status Calculated field Event#}
                                                     <span class="label label-primary">{{ object.status }}</span>
+                                                </td>
+                                                <td>
+                                                    <p>Order #<strong>{{ object.id }}</strong></p>
                                                 </td>
                                                 <td class="project-title">
                                                     <a href="{% url 'art_request.detail' object.id %}">{{ object.name }}</a>
@@ -56,11 +60,6 @@
                                                         <div class="progress progress-mini">
                                                             <div style="width: {{ object.progress }}%;" class="progress-bar"></div>
                                                         </div>
-                                                </td>
-                                                <td class="project-people">
-                                                    {% if object.owner and object.owner.avatar %}
-                                                        <a href="#"><img alt="image" class="img-circle" src="{{ object.owner.avatar.url }}"></a>
-                                                    {% endif %}
                                                 </td>
                                                 <td class="project-actions">
                                                     <a href="{% url 'art_request.detail' object.id %}" class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>

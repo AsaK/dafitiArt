@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import forms
 from art.choices import STATUS_CHOICES
-from art.models import ArtRequest, ArtRequestEvent
+from art.models import ArtRequest, ArtRequestEvent, ArtRequestFile
 
 
 class ArtRequestForm(forms.ModelForm):
@@ -54,3 +54,18 @@ class ArtRequestForm(forms.ModelForm):
 
     def __equals_status(self):
         return self.instance.status == dict(STATUS_CHOICES)[int(self.cleaned_data['status'])]
+
+
+class ArtRequestFileForm(forms.ModelForm):
+
+    class Meta:
+        model = ArtRequestFile
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(ArtRequestFileForm, self).__init__(*args, **kwargs)
+        self.fields.pop('owner')
+        self.fields.pop('art_request')
+        self.fields['name'].widget.attrs = {'class': 'form-control', 'placeholder': 'Name'}
+        self.fields['file'].widget.attrs = {'class': 'form-control'}
+        self.fields['is_media'].widget.attrs = {'class': 'checkbox-inline'}
