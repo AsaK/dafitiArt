@@ -44,7 +44,7 @@
                                         {% for object in object_list %}
                                             <tr>
                                                 <td class="project-status">
-                                                    <span class="label label-primary">{{ object.status }}</span>
+                                                    <span class="label label-primary">{{ object.get_status_display }}</span>
                                                 </td>
                                                 <td>
                                                     <p>Order #<strong>{{ object.id }}</strong></p>

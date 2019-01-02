@@ -1,6 +1,7 @@
 # coding=utf-8
 # Create your views here.
 from django.contrib import messages
+from django.db.models import Q, Max, Case, When, IntegerField
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
@@ -27,7 +28,14 @@ class ArtRequestList(ListView):
         search = self.request.GET.get('search')
         if search:
             search = str(search)
-            queryset = queryset.filter(id=search) if search.isdigit() else queryset.filter(name__contains=search)
+            try:
+                status_id = [item for item in STATUS_CHOICES if item[1].lower() == search.lower()][0][0]
+                return queryset.filter(status=status_id)
+            except Exception as E:
+                """
+                    Se estourar um exception nao foi encontrado na lista superior
+                """
+                queryset = queryset.filter(id=search) if search.isdigit() else queryset.filter(name__contains=search)
         return queryset
 
 
@@ -103,6 +111,12 @@ class ArtRequestFileCreate(CreateView):
         form.instance.owner_id = self.request.user.id
         form.instance.art_request_id = self.kwargs.get('pk')
         response = super(ArtRequestFileCreate, self).form_valid(form)
+        ArtRequestEvent.insert_art_event(
+            art_request_id=form.instance.art_request_id,
+            event='UploadFile',
+            value=form.instance.name,
+            user=self.request.user
+        )
         messages.add_message(self.request, messages.SUCCESS, 'New file uploaded to request')
         return response
 
@@ -141,20 +155,16 @@ def set_responsible(request):
         responsible_id = request.POST.get('responsible_id')
         if art_request_id and responsible_id:
             responsible = User.objects.get(id=responsible_id)
-            event_data = {
-                'event_name': 'ChangeResponsible',
-                'responsible': {
-                    'id': responsible.id,
-                    'name': responsible.name
-                },
-                'user': {
-                    'id': request.user.id,
-                    'name': request.user.name
-                }
-            }
-            ArtRequestEvent.insert_art_event(art_request_id, event_data)
-            messages.add_message(request, messages.SUCCESS, 'New responsible assigned to request')
-            return JsonResponse({'status': 'sucess'})
+            if responsible:
+                ArtRequestEvent.insert_art_event(
+                    art_request_id=art_request_id,
+                    event='ChangeResponsible',
+                    value=responsible.get_short_name(),
+                    user=request.user
+                )
+                ArtRequest.objects.filter(id=art_request_id).update(responsible=responsible.id)
+                messages.add_message(request, messages.SUCCESS, 'New responsible assigned to request')
+                return JsonResponse({'status': 'success'})
 
 
 @csrf_exempt
@@ -169,17 +179,14 @@ def insert_message(request):
         art_request_id = request.POST.get('art_request_id')
         message = request.POST.get('message')
         if art_request_id and message:
-            event_data = {
-                'event_name': 'InsertComment',
-                'message': message,
-                'user': {
-                    'id': request.user.id,
-                    'name': request.user.name
-                }
-            }
-            ArtRequestEvent.insert_art_event(art_request_id, event_data)
+            ArtRequestEvent.insert_art_event(
+                art_request_id=art_request_id,
+                event='InsertComment',
+                value=message,
+                user=request.user
+            )
             messages.add_message(request, messages.SUCCESS, 'New comment entered')
-            return JsonResponse({'status': 'sucess'})
+            return JsonResponse({'status': 'success'})
 
 
 @csrf_exempt
@@ -194,24 +201,19 @@ def change_status(request):
         status = request.POST.get('status')
         if art_request_id and status:
             status_id = [item for item in STATUS_CHOICES if item[1] == status][0][0]
-            event_data = {
-                'event_name': 'ChangeStatus',
-                'status': status_id,
-                'user': {
-                    'id': request.user.id,
-                    'name': request.user.name
-                }
-            }
-            ArtRequestEvent.insert_art_event(art_request_id, event_data)
+            ArtRequestEvent.insert_art_event(
+                art_request_id=art_request_id,
+                event='ChangeStatus',
+                value=status_id,
+                user=request.user
+            )
+            ArtRequest.objects.filter(id=art_request_id).update(status=status_id)
             if status == 'Completed':
-                event_data = {
-                    'event_name': 'ChangeProgress',
-                    'progress': 100,
-                    'user': {
-                        'id': request.user.id,
-                        'name': request.user.name
-                    }
-                }
-                ArtRequestEvent.insert_art_event(art_request_id, event_data)
+                ArtRequestEvent.insert_art_event(
+                    art_request_id=art_request_id,
+                    event='ChangeProgress',
+                    value=100,
+                    user=request.user
+                )
             messages.add_message(request, messages.SUCCESS, 'Status successfully changed')
-            return JsonResponse({'status': 'sucess'})
+            return JsonResponse({'status': 'success'})

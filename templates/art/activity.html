@@ -4,14 +4,20 @@
     <tr>
         <th>Changed by</th>
         <th>Action</th>
+        <th>Value</th>
         <th>Date</th>
     </tr>
     </thead>
     <tbody id="activity-tbody">
         {% for activity in object.events %}
             <tr>
-                <td>{{ activity.data_as_dict.user.name }}</td>
-                <td>{{ activity.data_as_dict.event_name|activity_label }}</td>
+                <td>{{ activity.user.name }}</td>
+                <td>{{ activity.event|activity_label }}</td>
+                {% if activity.event == 'ChangeStatus' %}
+                    <td>{{ activity.value|status_label}}</td>
+                {% else %}
+                    <td><small>{{ activity.value}}</small>  </td>
+                {% endif %}
                 <td>{{ activity.created_at }}</td>
             </tr>
         {% endfor %}

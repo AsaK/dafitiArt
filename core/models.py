@@ -43,7 +43,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name='Email')
     avatar = models.ImageField(verbose_name='Avatar', null=True, blank=True, upload_to=get_avatar_path)
     created_at = models.DateTimeField(verbose_name='Creation date', auto_now_add=True)
-
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

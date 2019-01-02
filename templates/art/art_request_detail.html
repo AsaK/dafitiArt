@@ -57,7 +57,7 @@
                                         <h2>{{ object.name }}</h2>
                                     </div>
                                     <dl class="dl-horizontal">
-                                        <dt>Status:</dt> <dd><span class="label label-primary">{{ object.status }}</span></dd>
+                                        <dt>Status:</dt> <dd><span class="label label-primary">{{ object.get_status_display }}</span></dd>
                                     </dl>
                                 </div>
                             </div>
@@ -73,7 +73,7 @@
 
                                         <dt>Last Updated:</dt> <dd>{{ object.last_update }}</dd>
                                         <dt>Created:</dt> <dd> 	{{ object.created_at }} </dd>
-                                        <dt>Responsible:</dt> <dd>{{ object.responsible }}</dd>
+                                        <dt>Responsible:</dt> <dd>{% if object.responsible %} {{ object.responsible.name }} {% else %}Not Assigned {% endif %}</dd>
                                     </dl>
                                 </div>
                             </div>
@@ -115,10 +115,10 @@
                                                 </a>
                                                 <div class="media-body ">
                                                     <small class="pull-right">{{ message.created_at }}</small>
-                                                    <strong>{{ message.data_as_dict.user.name }}</strong><br>
+                                                    <strong>{{ message.user.name }}</strong><br>
                                                     <small class="text-muted">Design</small>
                                                     <div class="well">
-                                                        {{ message.data_as_dict.message|safe }}
+                                                        {{ message.value|safe }}
                                                     </div>
                                                 </div>
                                             </div>

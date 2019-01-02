@@ -16,4 +16,5 @@ EVENT_DESCRIPTION = (
     ("InsertComment", "Inserted a new comment"),
     ("ChangeResponsible", "Changed the responsible person in the requisition"),
     ("ChangeProgress", "Changed the request progression"),
+    ("UploadFile", "Uploaded a new file"),
 )

@@ -1,22 +1,31 @@
 # coding=utf-8
 from __future__ import unicode_literals
-
-import ast
-import json
-from django.core import serializers
-
 from django.db import models
 
 from art.utils import get_files_path
+from core.models import User
 from choices import STATUS_CHOICES
-# Create your models here.
 from django.db.models import Q
 
 
 class ArtRequest(models.Model):
     name = models.CharField(max_length=100, verbose_name='Name')
     description = models.TextField(verbose_name='Description')
-    owner = models.ForeignKey('core.User', verbose_name='Owner', on_delete=models.DO_NOTHING)
+    responsible = models.ForeignKey(
+        'core.User',
+        verbose_name='Responsible',
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+        related_name='responsible'
+    )
+    owner = models.ForeignKey(
+        'core.User',
+        verbose_name='Owner',
+        on_delete=models.DO_NOTHING,
+        related_name='owner'
+    )
+    status = models.IntegerField(verbose_name='Status', default=1, choices=STATUS_CHOICES)
     updated_at = models.DateTimeField(verbose_name='Updated at', auto_now=True)
     created_at = models.DateTimeField(verbose_name='Created at', auto_now_add=True)
 
@@ -24,19 +33,9 @@ class ArtRequest(models.Model):
         return self.name
 
     @property
-    def status(self):
-        art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeStatus')
-        return dict(STATUS_CHOICES)[int(art_status_event.data_as_dict['status'])] if art_status_event else None
-
-    @property
     def progress(self):
         art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeProgress')
-        return (art_status_event.data_as_dict['progress']) if art_status_event else 0
-
-    @property
-    def responsible(self):
-        art_status_event = ArtRequestEvent.get_last_event(self.id, 'ChangeResponsible')
-        return art_status_event.data_as_dict['responsible']['name'] if art_status_event else 'Not assigned'
+        return int(art_status_event.value) if art_status_event else 0
 
     @property
     def last_update(self):
@@ -56,24 +55,28 @@ class ArtRequestEvent(models.Model):
     art_request = models.ForeignKey('art.ArtRequest', verbose_name='Art request', on_delete=models.DO_NOTHING)
     sequence = models.IntegerField(verbose_name='Sequence')
     event = models.CharField(max_length=255, verbose_name='Event')
-    data = models.TextField(verbose_name='Data')
+    user = models.ForeignKey('core.User', verbose_name='Usuario', on_delete=models.DO_NOTHING)
+    value = models.TextField(verbose_name='Data Value')
     created_at = models.DateTimeField(verbose_name='Created at', auto_now_add=True)
 
     @staticmethod
-    def insert_art_event(art_request_id, data):
+    def insert_art_event(art_request_id, event, value, user):
         """
             Função para inserir um evento no storage de eventos do EventSorucing
 
+        :param user:
+        :param event:
+        :param value:
         :param art_request_id:
-        :param data:
         :return:
         """
         next_sequence = ArtRequestEvent.__get_last_sequence(art_request_id) + 1
         art_event = ArtRequestEvent(
             art_request_id=art_request_id,
             sequence=next_sequence,
-            event=data['event_name'],
-            data=json.dumps(data, ensure_ascii=False).encode('utf-8')
+            event=event,
+            value=value,
+            user_id=user.id
         )
         art_event.save()
 
@@ -104,14 +107,6 @@ class ArtRequestEvent(models.Model):
         return ArtRequestEvent.objects.filter(
             Q(art_request_id=art_request_id) &
             Q(event=event)).order_by('-sequence').first()
-
-    @property
-    def data_as_dict(self):
-        """
-            Um 'Hack' para auxiliar o tratamento do field 'data' do evento, que armazena todas as informações do evento
-        :return o campo data como um dicionário:
-        """
-        return ast.literal_eval(self.data)
 
 
 class ArtRequestFile(models.Model):
