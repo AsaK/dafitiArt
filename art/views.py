@@ -25,6 +25,9 @@ class ArtRequestList(ListView):
 
     def get_queryset(self):
         queryset = super(ArtRequestList, self).get_queryset()
+        if self.request.user.type == User.DESIGNER:
+            queryset = queryset.filter(responsible=self.request.user)
+
         search = self.request.GET.get('search')
         if search:
             search = str(search)

@@ -39,9 +39,19 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    MARKETING_DIRECTOR = 1
+    ART_DIRECTOR = 2
+    DESIGNER = 3
+
+    ACCOUNT_TYPE_CHOICES = (
+        (MARKETING_DIRECTOR, 'Marketing Director'),
+        (ART_DIRECTOR, 'Art Director'),
+        (DESIGNER, 'Designer')
+    )
     name = models.CharField(max_length=100, verbose_name='Name')
     email = models.EmailField(unique=True, verbose_name='Email')
     avatar = models.ImageField(verbose_name='Avatar', null=True, blank=True, upload_to=get_avatar_path)
+    type = models.IntegerField(verbose_name='Type', choices=ACCOUNT_TYPE_CHOICES, default=3)
     created_at = models.DateTimeField(verbose_name='Creation date', auto_now_add=True)
     objects = UserManager()
 

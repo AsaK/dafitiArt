@@ -3,8 +3,11 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView, RedirectView, TemplateView
+from django.db import connection
 
+from art.models import ArtRequest
 from core.forms import LoginForm
+from core.models import User
 
 
 class LoginView(FormView):
@@ -39,3 +42,20 @@ class LogoutView(RedirectView):
 
 class DashboardView(TemplateView):
     template_name = 'general/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardView, self).get_context_data()
+        context['all_requests'] = ArtRequest.objects.all().count()
+        if self.request.user.type == User.DESIGNER:
+            context['my_requests'] = ArtRequest.objects.filter(responsible=self.request.user)
+        else:
+            context['my_requests'] = ArtRequest.objects.filter(owner=self.request.user)
+        context['report_worktime'] = self.__get_average_worktime()
+        return context
+
+    @staticmethod
+    def __get_average_worktime():
+        cursor = connection.cursor()
+        cursor.execute('select * from average_work')  # Get all from the view
+        return list(cursor.fetchall())
+

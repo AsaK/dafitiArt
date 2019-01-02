@@ -20,9 +20,11 @@
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>All requests assigned to this account</h5>
-                        <div class="ibox-tools">
-                            <a href="{% url 'art_request.create' %}" class="btn btn-primary btn-xs">Create new request</a>
-                        </div>
+                        {% if request.user.type == 1 %}
+                            <div class="ibox-tools">
+                                <a href="{% url 'art_request.create' %}" class="btn btn-primary btn-xs">Create new request</a>
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="ibox-content">
                         <div class="row m-b-sm m-t-sm">
