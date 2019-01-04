@@ -16,6 +16,7 @@
     </div>
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
+        {% if objects %}
             {% for object in objects %}
                 <div class="col-lg-4">
                     <div class="contact-box">
@@ -44,6 +45,12 @@
                     </div>
                 </div>
             {% endfor %}
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <strong>No records</strong>
+                <p>No record yet to be shown.</p>
+            </div>
+        {% endif %}
         </div>
     </div>
 {% endblock %}
