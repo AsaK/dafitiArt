@@ -1,0 +1,56 @@
+{% extends 'general/base.html' %}
+{% load staticfiles %}
+{% block Content %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>Average Work Time</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{% url 'dashboard' %}">Home</a>
+                </li>
+                <li class="active">
+                    <strong>Top Designers</strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+        {% if objects %}
+            {% for object in objects %}
+                <div class="col-lg-4">
+                    <div class="contact-box">
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                {% if object.avatar %}
+                                    <img alt="image" class="img-circle m-t-xs img-responsive" src="{{ object.avatar.url }}">
+                                {% else %}
+                                    <img alt="image" class="img-circle m-t-xs img-responsive" src="{% static 'img/avatar.png' %}">
+                                {% endif %}
+                                <div class="m-t-xs font-bold">Graphics designer</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <h3><strong>{{ object.name }} - #{{ forloop.counter }}</strong></h3>
+                            <p><i class="fa fa-address-card"></i> {{ object.email }}</p>
+                            <p>Average Time: <strong>{{ object.work_average}} minutes</strong></p>
+                            <address>
+                                <strong>DafitiArt, Inc.</strong><br>
+                                Av. Francisco Matarazzo, 1350<br>
+                                Água Branca, SP 05001-100<br>
+                                <abbr title="Phone">P:</abbr> (11) 3055-0380
+                            </address>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <strong>No records</strong>
+                <p>No record yet to be shown.</p>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'general/base.html' %}
+{% block Content %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2>Project files</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{% url 'dashboard' %}">Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'art_request.list' %}">Art request</a>
+                </li>
+                <li>
+                    <a href="{% url 'art_request.detail' art_request_id %}">Detail</a>
+                </li>
+                <li class="active">
+                    <a href="{% url 'art_request.files' art_request_id %}">Files</a>
+                </li>
+                <li class="active">
+                    <strong>Upload</strong>
+                </li>
+
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="wrapper wrapper-content animated fadeInUp">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Insert data for the new request</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form method="post" class="form-horizontal" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if form.non_field_errors %}
+                                 <div class="alert alert-danger" role="alert">
+                                     {% for error in form.non_field_errors %}
+                                         {{ error }}
+                                     {% endfor %}
+                                 </div>
+                            {% endif %}
+                            {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field.errors }}
+                                {{ hidden_field }}
+                            {% endfor %}
+                            {% for field in form.visible_fields %}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">{{ field.label }}</label>
+                                    <div class="col-sm-10">
+                                        {{ field }}
+                                        {{ field.errors.as_text }}
+                                        {% if field.help_text %}
+                                            <span class="help-block m-b-none">{{ field.help_text }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                            {% endfor %}
+
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <a href="{% url 'art_request.files' art_request_id %}"><button class="btn btn-white" type="button">Cancel</button></a>
+                                    <button class="btn btn-primary" type="submit">Upload</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

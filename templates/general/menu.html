@@ -1,0 +1,11 @@
+<li>
+    <a href="{% url 'dashboard' %}"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span></a>
+</li>
+<li>
+    <a href="{% url 'art_request.list' %}"><i class="fa fa-pencil"></i> <span class="nav-label">Art Request</span></a>
+</li>
+{% if request.user.type == 1 %}
+    <li>
+        <a href="{% url 'report.average-work-time' %}"><i class="fa fa-file"></i> <span class="nav-label">Average Work Time</span></a>
+    </li>
+{% endif %}
