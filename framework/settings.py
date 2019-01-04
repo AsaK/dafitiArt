@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'core',
     'art',
     'rest_framework',
+    'report',
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,4 @@
 {% extends 'general/base.html' %}
-{% block ExtraHead %}
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-{% endblock %}
 {% block Content %}
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-sm-4">
@@ -40,51 +37,12 @@
                         </div>
                         <div class="col-xs-8 text-right">
                             <span> Assign to me </span>
-                            <h2 class="font-bold">{{ all_requests }}</h2>
+                            <h2 class="font-bold">{{ my_requests }}</h2>
                         </div>
-                    </div>
-                </div>
-            </div>
-        <div class="col-lg-6">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Report with the average time for designer in this year.</h5>
-                </div>
-                <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table id="table_designers" class="display nowrap dataTables_wrapper form-inline dt-bootstrap">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Average Time (in Minutes)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for object in report_worktime %}
-                                    <tr>
-                                        <td>{{object.1}}</td>
-                                        <td>{{ object.2 }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
 
-{% endblock %}
-{% block ExtraJS %}
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#table_designers').DataTable({
-                buttons: [
-                    'pdf', 'print'
-                ],
-            });
-        });
-    </script>
 {% endblock %}

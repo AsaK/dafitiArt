@@ -47,9 +47,9 @@ class DashboardView(TemplateView):
         context = super(DashboardView, self).get_context_data()
         context['all_requests'] = ArtRequest.objects.all().count()
         if self.request.user.type == User.DESIGNER:
-            context['my_requests'] = ArtRequest.objects.filter(responsible=self.request.user)
+            context['my_requests'] = ArtRequest.objects.filter(responsible=self.request.user).count()
         else:
-            context['my_requests'] = ArtRequest.objects.filter(owner=self.request.user)
+            context['my_requests'] = ArtRequest.objects.filter(owner=self.request.user).count()
         context['report_worktime'] = self.__get_average_worktime()
         return context
 

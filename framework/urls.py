@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^', include('core.urls')),
     url(r'^art/', include('art.urls')),
     url(r'^api/', include('api.urls')),
+    url(r'^report/', include('report.urls')),
 ]
