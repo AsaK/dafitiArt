@@ -6,5 +6,5 @@ CREATE VIEW IF NOT EXISTS average_work AS
      WHERE art.event == 'ChangeStatus'
        AND user.type == 3
      GROUP BY art.art_request_id, art.user_id
-) as x GROUP BY id
+) as x GROUP BY id ORDER BY work_average
 

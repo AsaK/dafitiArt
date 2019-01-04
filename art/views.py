@@ -142,7 +142,7 @@ def load_designers(request):
     :param request:
     :return Json com todos os designers:
     """
-    users = User.objects.all().values('id', 'name', 'email').order_by('id')
+    users = User.objects.filter(type=3).values('id', 'name', 'email').order_by('id')
     return JsonResponse({"users": list(users)})
 
 
